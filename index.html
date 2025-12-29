@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>보령 미용학원</title>
+
+    <style>
+        /* [1. 전체 레이아웃 및 배경] */
+        body {
+            background-color: #FDFDFD;
+            color: #2c3e50;
+            transition: all 0.5s ease;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a2e;
+                color: #e0e0e0;
+            }
+
+            nav {
+                background-color: #16213e !important;
+            }
+        }
+
+        /* [2. 상단 바(Top Bar)] */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: transparent;
+        }
+
+        /* 왼쪽 영역: 메뉴 버튼 */
+        .top-left {
+            flex: 1;
+            display: flex;
+            justify-content: flex-start;
+            /* 기본 왼쪽 정렬 */
+
+            /* [위치 미세 조정 포인트] */
+            /* 왼쪽 벽에서 20px만큼 떨어지게 합니다. 숫자를 키울수록 오른쪽으로 이동합니다. */
+            padding-left: 20px;
+        }
+
+        /* 혹은 이미지 태그에 직접 margin을 줄 수도 있습니다 */
+        .top-left img {
+            margin-left: 15px;
+            /* 왼쪽 벽에서 15px만큼 살짝 오른쪽으로 이동 */
+            cursor: pointer;
+        }
+
+        .top-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .top-right-empty {
+            flex: 1;
+        }
+
+        .center-text-1 {
+            font-family: '굴림';
+            font-size: 40px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .center-text-2 {
+            font-family: '굴림';
+            font-size: 40px;
+            font-weight: 900;
+            color: #545454;
+            margin-left: 5px;
+        }
+
+        /* [3. 메뉴바(Nav)] */
+        nav {
+            background-color: #D5D5D5;
+            /* 단색으로 수정 */
+            padding: 5px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 0px 0px;
+            margin: 10px auto 0 auto;
+            width: 90%;
+            text-align: center;
+        }
+
+        nav a {
+            color: #2A2A2A;
+            text-decoration: none;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 0 15px;
+        }
+
+        nav a:hover {
+            color: #ff1100;
+            transform: scale(1.1);
+        }
+
+        /* 드롭다운 전체 컨테이너 */
+        .dropdown {
+            display: inline-block;
+            position: relative;
+        }
+
+        /* 상세 메뉴 박스 스타일 */
+        .dropdown-content {
+            display: none;
+            /* 평소에는 숨김 */
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            border-radius: 8px;
+            top: 100%;
+            /* 부모 메뉴 바로 아래에 위치 */
+            left: 50%;
+            transform: translateX(-50%);
+            /* 가운데 정렬 */
+            overflow: hidden;
+        }
+
+        /* 상세 메뉴 안의 링크들 */
+        .dropdown-content a {
+            color: #333 !important;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            text-align: center;
+            margin: 0;
+            /* 기존 nav a의 마진 제거 */
+        }
+
+        /* 상세 메뉴 항목에 마우스 올렸을 때 */
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: #ff1100 !important;
+        }
+
+        /* [핵심] 부모 메뉴에 마우스 올리면 상세 메뉴 표시 */
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeInDown 0.3s ease;
+            /* 부드럽게 나타나는 애니메이션 */
+        }
+
+        /* 부드러운 등장 효과 */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* [4. 사이드 메뉴] */
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0px;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 15px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+        }
+
+        /* [5. 플로팅 퀵 메뉴] */
+        .floating-container {
+            position: fixed;
+            top: 10px;
+            right: 50px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .main-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #87CEFA;
+            color: #5555FF;
+            font-size: 35px;
+            font-weight: 900;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu-items {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-item {
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .facebook {
+            background-color: #3b5998;
+        }
+
+        .blog {
+            background-color: #2db400;
+        }
+
+        .instagram {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+
+        .youtube {
+            background-color: #ff0000;
+        }
+
+        .campus {
+            background-color: #a0d8ef;
+        }
+
+        .video-slider {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            /* [조절] 영상이 보여질 높이 */
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        .bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            /* 평소에는 숨김 */
+            transition: opacity 1.5s ease-in-out;
+            /* 부드러운 교체 효과 */
+        }
+
+        .bg-video.active {
+            opacity: 1;
+            /* 활성화된 영상만 보임 */
+        }
+
+        .video-overlay {
+            position: absolute;
+            z-index: 5;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            width: 100%;
+        }
+
+        .video-overlay h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        /* [6. 하단 푸터(Footer) 디자인] */
+        footer {
+            margin-top: auto;
+            /* 푸터를 항상 바닥으로 */
+            background-color: #ffffff;
+            padding: 10px 50px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #eee;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .footer-left h3,
+        .footer-right h3 {
+            font-size: 10px;
+            margin-bottom: 10px;
+        }
+
+        .footer-left p,
+        .footer-right p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .call-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .phone-big {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* [7. PC/태블릿용 모달 팝업] */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 4000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 20vh auto;
+            padding: 30px;
+            width: 300px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-right {
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .center-text-1 {
+                font-size: 18px;
+            }
+
+            .center-text-2 {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="password-screen"
+        style="text-align: center; padding-top: 100px; background: white; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000;">
+        <h2>비밀번호를 입력하세요</h2>
+        <input type="password" id="password-input" style="padding: 10px; font-size: 16px;">
+        <button onclick="checkPassword()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">확인</button>
+        <p id="error-message" style="color: red; display: none;">비밀번호가 틀렸습니다.</p>
+    </div>
+
+    <header class="top-bar">
+        <div class="top-left">
+            <a href="javascript:void(0)" onclick="openNav()">
+                <img src="이미지_002_메뉴.png" alt="메뉴열기" style="height: 40px;">
+            </a>
+        </div>
+        <div class="top-center">
+            <a href="index.html" style="text-decoration: none; display: flex; align-items: center;">
+                <img src="이미지_001_보령시 로고.png" alt="중간로고" style="height: 40px;">
+                <span class="center-text-1">보령</span>
+                <span class="center-text-2">미용학원</span>
+            </a>
+        </div>
+        <div class="top-right-empty"></div>
+    </header>
+
+    <div id="side-menu" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">홈</a>
+        <a href="011_AcademyIntroduction.html">학원소개</a>
+        <a href="012_AcademyNoticeboard.html">게시판</a>
+        <a href="013_AcademyLocation.html">오시는 길</a>
+    </div>
+
+    <nav>
+        <div class="dropdown">
+            <a href="011_AcademyIntroduction.html" class="dropbtn">학원소개</a>
+            <div class="dropdown-content">
+                <a href="#">인사말</a>
+                <a href="#">강사진 소개</a>
+                <a href="013_AcademyLocation.html">오시는 길</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="012_AcademyNoticeboard.html" class="dropbtn">게시판</a>
+            <div class="dropdown-content">
+                <a href="#">공지사항</a>
+                <a href="#">교육 후기</a>
+                <a href="#">갤러리</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="video-slider">
+        <video class="bg-video active" autoplay muted playsinline>
+            <source src="임시 영상_1.mp4" type="video/mp4">
+        </video>
+        <video class="bg-video active" autoplay muted playsinline>
+            <source src="임시 영상_2.mp4" type="video/mp4">
+        </video>
+        <video class="bg-video active" autoplay muted playsinline>
+            <source src="임시 영상_3.mp4" type="video/mp4">
+        </video>
+
+        <div class="video-overlay">
+            <h1 id="video-text">보령 미용학원에 오신 것을 환영합니다</h1>
+        </div>
+    </main>
+
+    <div class="floating-container">
+        <div id="quick-menu" class="menu-items">
+            <a href="https://facebook.com" class="btn-item facebook">페이스북</a>
+            <a href="https://blog.naver.com" class="btn-item blog">블로그</a>
+            <a href="https://instagram.com" class="btn-item instagram">인스타그램</a>
+            <a href="https://youtube.com" class="btn-item youtube">유튜브</a>
+            <a href="#" class="btn-item campus">전국캠퍼스찾기</a>
+        </div>
+        <button class="main-button" onclick="toggleMenu()">SNS</button>
+    </div>
+
+    <footer class="footer-box">
+        <div class="footer-container">
+            <div class="footer-left">
+                <h3>보령 미용학원</h3>
+                <p>사업자 등록번호: 123-45-67890</p>
+                <p>주소: 충남 보령시 대천로 123 (2층)</p>
+                <p>대표자: 홍길동</p>
+            </div>
+            <div class="footer-right">
+                <h3>학원 상담 안내</h3>
+                <p class="phone-big">TEL. 010-1234-5678</p>
+                <p>평일 09:00 - 18:00 (주말/공휴일 휴무)</p>
+                <a href="tel:01012345678" class="call-button" onclick="handleCall(event)">전화하기</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="callModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 style="margin-top:10px;">상담 전화 안내</h3>
+            <p>아래 번호로 전화주시면<br>친절하게 상담해 드립니다.</p>
+            <h2 style="color: #2c3e50;">010-1234-5678</h2>
+        </div>
+    </div>
+
+    <script>
+        // 비밀번호 체크
+        function checkPassword() {
+            var password = document.getElementById("password-input").value;
+            if (password === "115412") {
+                document.getElementById("password-screen").style.display = "none";
+            } else {
+                document.getElementById("error-message").style.display = "block";
+            }
+        }
+
+        // 사이드 메뉴 제어
+        function openNav() { document.getElementById("side-menu").style.width = "250px"; }
+        function closeNav() { document.getElementById("side-menu").style.width = "0"; }
+
+        // 플로팅 메뉴 제어
+        function toggleMenu() {
+            const menu = document.getElementById('quick-menu');
+            const btn = document.querySelector('.main-button');
+            if (menu.style.display === 'flex') {
+                menu.style.display = 'none';
+                btn.innerHTML = 'SNS';
+            } else {
+                menu.style.display = 'flex';
+                btn.innerHTML = '×';
+            }
+        }
+
+        // 전화하기 기능 (기기별 분기)
+        function handleCall(event) {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+            if (!isMobile) {
+                event.preventDefault(); // PC에서는 전화 걸기 방지
+                document.getElementById('callModal').style.display = "block"; // 팝업 표시
+            }
+        }
+
+        function closeModal() { document.getElementById('callModal').style.display = "none"; }
+
+        // 팝업 바깥 클릭시 닫기
+        window.onclick = function (event) {
+            const modal = document.getElementById('callModal');
+            if (event.target == modal) modal.style.display = "none";
+        }
+
+        const videoElements = document.querySelectorAll('.bg-video');
+        let currentVideoIndex = 0;
+
+        function nextVideo() {
+            // 현재 영상 숨기기
+            videoElements[currentVideoIndex].classList.remove('active');
+            videoElements[currentVideoIndex].pause();
+
+            // 다음 영상 인덱스 계산
+            currentVideoIndex = (currentVideoIndex + 1) % videoElements.length;
+
+            // 다음 영상 보여주고 재생하기
+            const nextVid = videoElements[currentVideoIndex];
+            nextVid.classList.add('active');
+            nextVid.currentTime = 0; // 처음부터 재생
+            nextVid.play();
+        }
+
+        // 각 영상이 끝날 때마다 다음 영상으로 넘어가기
+        videoElements.forEach((vid) => {
+            vid.onended = () => {
+                nextVideo();
+            };
+        });
+
+        setInterval(nextVideo, 5000);
+    </script>
+</body>
+
+</html>
